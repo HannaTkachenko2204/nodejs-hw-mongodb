@@ -6,4 +6,4 @@ const bootstrap = async () => {
   setupServer();
 };
 
-bootstrap();
+bootstrap(); // функція, яка буде ініціалізувати підключення до бази даних, після чого запускати сервер

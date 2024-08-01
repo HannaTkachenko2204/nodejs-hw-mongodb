@@ -1,10 +1,10 @@
-import { model, Schema } from 'mongoose';
+import { model, Schema } from 'mongoose'; // схема, модель, документ
 
 const contactsSchema = new Schema(
   {
     name: {
       type: String,
-      required: true,
+      required: true, // ця властивість вказує, чи є поле обов'язковим для заповнення
     },
     phoneNumber: {
       type: String,
@@ -13,7 +13,7 @@ const contactsSchema = new Schema(
     email: {
       type: String,
       match: [/.+@.+\..+/, 'Please fill a valid email address'],
-      default: null,
+      default: null, // вказує значення за замовчуванням, якщо поле не вказано при створенні документа
     },
     isFavourite: {
       type: Boolean,
@@ -21,14 +21,15 @@ const contactsSchema = new Schema(
     },
     contactType: {
       type: String,
-      enum: ['work', 'home', 'personal'],
+      enum: ['work', 'home', 'personal'], // це перелік допустимих значень для поля
       required: true,
       default: 'personal',
     },
   },
   {
-    timestamps: true,
+    timestamps: true, // встановлює значення true, щоб автоматично створювати поля createdAt та updatedAt, які вказують на час створення та оновлення документа
+    versionKey: false, // вказує, чи має бути створене поле __v для відстеження версій документу
   },
 );
 
-export const ContactsCollection = model('contacts', contactsSchema);
+export const ContactsCollection = model('contacts', contactsSchema); // створюємо модель контакта за допомогою схеми
