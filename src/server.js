@@ -3,7 +3,9 @@ import pino from 'pino-http'; // логування дозволяє слідк�
 import cors from 'cors'; // інструмент безпеки для веб-додатків, який дозволяє обмінюватися інформацією між веб-ресурсами з різних доменів
 import dotenv from 'dotenv'; // пакет для зчитувння та використання змінних оточення в додатку
 import { env } from './utils/env.js'; // функція env, призначена для читання змінних оточення
-import { getAllContacts, getContactById } from './servises/contacts.js'; // імпортуємо функції сервісу contacts та використовуємо їх у контролерах
+import contactsRouter from './routers/contacts.js'; // імпортуємо роутер
+import { errorHandler } from './middlewares/errorHandler.js';
+import { notFoundHandler } from './middlewares/notFoundHandler.js';
 
 dotenv.config();
 
@@ -24,50 +26,11 @@ export function setupServer() {
     }),
   );
 
-  app.get('/contacts', async (req, res) => {
-    // маршрут для отримання колекції всіх контактів
-    const contacts = await getAllContacts();
-    res.status(200).json({
-      status: 200,
-      message: 'Successfully found contacts!',
-      data: contacts,
-    });
-  });
+  app.use(contactsRouter); // додаємо роутер до app як middleware
 
-  // eslint-disable-next-line no-unused-vars
-  app.get('/contacts/:contactId', async (req, res, next) => {
-    // маршрут для отримання контакта за його id
-    const { contactId } = req.params;
-    const contact = await getContactById(contactId);
+  app.use('*', notFoundHandler);
 
-    // Відповідь, якщо контакт не знайдено
-    if (!contact) {
-      res.status(404).json({
-        message: 'Contact not found',
-      });
-      return;
-    }
-
-    // відповідь, якщо контакт знайдено
-    res.status(200).json({
-      status: 200,
-      message: 'Successfully found contact with id {**contactId**}!',
-      data: contact,
-    });
-  });
-
-  // eslint-disable-next-line no-unused-vars
-  app.use('*', (req, res, next) => {
-    // мідлвар в Express.js, який обробляє всі запити, що не відповідають жодному з визначених маршрутів
-    res.status(404).send({ status: 404, message: 'Route not found' });
-  });
-
-  // eslint-disable-next-line no-unused-vars
-  app.use((error, req, res, next) => {
-    // мідлвар для обробки помилок у Express.js додатку
-    console.error(error);
-    res.status(500).send({ status: 500, message: 'Internal Server Error' });
-  });
+  app.use(errorHandler);
 
   app.listen(PORT, () => {
     // запускає сервер на певному порту і виводить повідомлення в консоль, яке підтверджує успішний запуск сервера
