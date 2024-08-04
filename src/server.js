@@ -15,7 +15,12 @@ const PORT = Number(env('PORT', '3000'));
 export function setupServer() {
   const app = express();
 
-  app.use(express.json()); // підключення мідлвару, який аналізує вхідні запити з JSON-пейлоадом і автоматично парсить їх у JavaScript-об'єкти
+  app.use(
+    express.json({
+      type: ['application/json'],
+      limit: '100kb',
+    }),
+  ); // підключення мідлвару, який аналізує вхідні запити з JSON-пейлоадом і автоматично парсить їх у JavaScript-об'єкти
   app.use(cors());
 
   app.use(
@@ -26,7 +31,7 @@ export function setupServer() {
     }),
   );
 
-  app.use('/contacts',contactsRouter); // додаємо роутер до app як middleware
+  app.use('/contacts', contactsRouter); // додаємо роутер до app як middleware
 
   app.use('*', notFoundHandler);
 

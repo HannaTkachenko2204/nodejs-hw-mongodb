@@ -1,4 +1,8 @@
-import { getAllContacts, getContactById } from '../services/contacts.js'; // імпортуємо функції сервісу contacts та використовуємо їх у контролерах
+import {
+  createContact,
+  getAllContacts,
+  getContactById,
+} from '../services/contacts.js'; // імпортуємо функції сервісу contacts та використовуємо їх у контролерах
 import createHttpError from 'http-errors';
 
 export const getContactsController = async (req, res) => {
@@ -26,23 +30,32 @@ export const getContactByIdController = async (req, res, next) => {
   // }
 
   // тепер додаємо базову обробку помилки замість res.status(404)
-//   if (!contact) {
-//     next(new Error('Contact not found'));
-//     return;
-//   }
+  //   if (!contact) {
+  //     next(new Error('Contact not found'));
+  //     return;
+  //   }
 
   if (!contact) {
     // cтворюємо та налаштовуємо помилку
     throw createHttpError(404, 'Student not found');
     // throw createHttpError([404], ('Student not found'));
     // throw createHttpError.NotFound('Student not found'));
-
   }
 
   // відповідь, якщо контакт знайдено
   res.status(200).json({
     status: 200,
     message: `Successfully found contact with id ${contactId}!`,
+    data: contact,
+  });
+};
+
+export const createContactController = async (req, res) => {
+  const contact = await createContact(req.body);
+
+  res.status(201).json({
+    status: 201,
+    message: `Successfully created a student!`,
     data: contact,
   });
 };
