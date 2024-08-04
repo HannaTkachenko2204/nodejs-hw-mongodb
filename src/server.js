@@ -26,7 +26,7 @@ export function setupServer() {
     }),
   );
 
-  app.use(contactsRouter); // додаємо роутер до app як middleware
+  app.use('/contacts',contactsRouter); // додаємо роутер до app як middleware
 
   app.use('*', notFoundHandler);
 
