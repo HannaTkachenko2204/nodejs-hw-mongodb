@@ -6,10 +6,15 @@ import {
   updateContact,
 } from '../services/contacts.js'; // імпортуємо функції сервісу contacts та використовуємо їх у контролерах
 import createHttpError from 'http-errors';
+import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 
 export const getContactsController = async (req, res) => {
   // маршрут для отримання колекції всіх контактів
-  const contacts = await getAllContacts();
+  const { page, perPage } = parsePaginationParams(req.query); // пагінаційні параметри
+  const contacts = await getAllContacts({
+    page,
+    perPage,
+  });
   res.status(200).json({
     status: 200,
     message: 'Successfully found contacts!',
