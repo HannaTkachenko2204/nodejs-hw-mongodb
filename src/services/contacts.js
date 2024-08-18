@@ -2,23 +2,40 @@ import { ContactsCollection } from '../db/models/contacts.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 import { SORT_ORDER } from '../constants/index.js';
 
-export const getAllContacts = async ({ page = 1,
+export const getAllContacts = async ({
+  page = 1,
   perPage = 10,
   sortOrder = SORT_ORDER.ASC,
-  sortBy = '_id', }) => { // приймає об'єкт з параметрами page та perPage, що вказують номер сторінки та кількість записів на сторінці відповідно + параметри sortOrder та sortBy дозволяють визначити порядок сортування та поле, за яким потрібно виконати сортування (_id за замовчуванням)
+  sortBy = '_id',
+  filter = {},
+}) => {
+  // приймає об'єкт з параметрами page та perPage, що вказують номер сторінки та кількість записів на сторінці відповідно + параметри sortOrder та sortBy дозволяють визначити порядок сортування та поле, за яким потрібно виконати сортування (_id за замовчуванням)
   const limit = perPage; // ліміт записів, які мають бути повернуті на одній сторінці
   const skip = (page - 1) * perPage; // кількість записів, що мають бути пропущені перед початком видачі на поточній сторінці
 
   const contactsQuery = ContactsCollection.find(); // запит до колекції, find() — це вбудований метод Mongoose для пошуку документів у MongoDB
-  const contactsCount = await ContactsCollection.find() // запит для підрахунку кількості документів в колекції
-    .merge(contactsQuery) // поєднує запит contactsQuery з підрахунком
-    .countDocuments(); // отримуємо загальну кількість записів
 
-  const contacts = await contactsQuery.skip(skip).limit(limit).sort({ [sortBy]: sortOrder }).exec(); // exec() - виконує запрос та повертає проміс з результатом
+  if (filter.contactType) {
+    contactsQuery.where('contactType').equals(filter.contactType);
+  }
+
+  if (filter.isFavourite) {
+    contactsQuery.where('isFavourite').equals(filter.isFavourite);
+  }
+
+  const [contactsCount, contacts] = await Promise.all([
+    ContactsCollection.find().merge(contactsQuery).countDocuments(), // запит для підрахунку кількості документів в колекції, merge - поєднує запит contactsQuery з підрахунком, countDocuments - отримуємо загальну кількість записів
+    contactsQuery
+      .skip(skip)
+      .limit(limit)
+      .sort({ [sortBy]: sortOrder })
+      .exec(), // exec() - виконує запрос та повертає проміс з результатом
+  ]);
 
   const paginationData = calculatePaginationData(contactsCount, perPage, page); // розрахунок даних пагінації на основі загальної кількості записів, ліміту та поточної сторінки
 
-  return { // об'єкт, що містить масив з даними про студентів і додаткову інформацію про пагінацію
+  return {
+    // об'єкт, що містить масив з даними про контакти і додаткову інформацію про пагінацію
     data: contacts,
     ...paginationData,
   };
