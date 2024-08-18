@@ -7,13 +7,19 @@ import {
 } from '../services/contacts.js'; // імпортуємо функції сервісу contacts та використовуємо їх у контролерах
 import createHttpError from 'http-errors';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
+import { parseSortParams } from '../utils/parseSortParams.js';
 
 export const getContactsController = async (req, res) => {
   // маршрут для отримання колекції всіх контактів
   const { page, perPage } = parsePaginationParams(req.query); // пагінаційні параметри
+
+  const { sortBy, sortOrder } = parseSortParams(req.query); // параметри сортування
+
   const contacts = await getAllContacts({
     page,
     perPage,
+    sortBy,
+    sortOrder,
   });
   res.status(200).json({
     status: 200,
