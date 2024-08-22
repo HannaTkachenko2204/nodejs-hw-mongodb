@@ -3,7 +3,8 @@ import pino from 'pino-http'; // логування дозволяє слідк�
 import cors from 'cors'; // інструмент безпеки для веб-додатків, який дозволяє обмінюватися інформацією між веб-ресурсами з різних доменів
 import dotenv from 'dotenv'; // пакет для зчитувння та використання змінних оточення в додатку
 import { env } from './utils/env.js'; // функція env, призначена для читання змінних оточення
-import contactsRouter from './routers/contacts.js'; // імпортуємо роутер
+// import contactsRouter from './routers/contacts.js';
+import router from './routers/index.js';  // імпортуємо роутер
 import { errorHandler } from './middlewares/errorHandler.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 
@@ -31,7 +32,8 @@ export function setupServer() {
     }),
   );
 
-  app.use('/contacts', contactsRouter); // додаємо роутер до app як middleware
+  // app.use(contactsRouter);
+  app.use(router); // додаємо роутер до app як middleware
 
   app.use('*', notFoundHandler);
 
