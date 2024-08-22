@@ -1,5 +1,10 @@
 import { THIRTY_DAY } from '../constants/index.js';
-import { loginUser, logoutUser, refreshUsersSession, registerUser } from '../services/auth.js';
+import {
+  loginUser,
+  logoutUser,
+  refreshUsersSession,
+  registerUser,
+} from '../services/auth.js';
 
 // створюємо контролер для реєстрації
 export const registerUserController = async (req, res) => {
@@ -40,24 +45,23 @@ export const loginUserController = async (req, res) => {
   });
 };
 
-
 // Створюємо функцію в сервісі для logout
 export const logoutUserController = async (req, res) => {
-  if (req.cookies.sessionId) { // перевіряємо, чи існує кукі sessionId у запиті
+  if (req.cookies.sessionId) {
+    // перевіряємо, чи існує кукі sessionId у запиті
     await logoutUser(req.cookies.sessionId); // видаляємо сесію користувача з бази даних
   }
-
 
   // видаляємо відповідні куки з браузера клієнта, що забезпечує вихід користувача з системи на стороні клієнта
   res.clearCookie('sessionId');
   res.clearCookie('refreshToken');
 
-
   // відправляємо відповідь клієнту зі статусним кодом 204 (No Content)
   res.status(204).send();
 };
 
-const setupSession = (res, session) => {  // встановлюємо два куки: refreshToken і sessionId, використовуючи метод res.cookie
+const setupSession = (res, session) => {
+  // встановлюємо два куки: refreshToken і sessionId, використовуючи метод res.cookie
   res.cookie('refreshToken', session.refreshToken, {
     httpOnly: true,
     expires: new Date(Date.now() + THIRTY_DAY),
@@ -70,14 +74,16 @@ const setupSession = (res, session) => {  // встановлюємо два к�
 
 // виконуємо процес оновлення сесії користувача і взаємодію з клієнтом через HTTP
 export const refreshUserSessionController = async (req, res) => {
-  const session = await refreshUsersSession({ // оновлюємо сесію
+  const session = await refreshUsersSession({
+    // оновлюємо сесію
     sessionId: req.cookies.sessionId,
     refreshToken: req.cookies.refreshToken,
   });
 
   setupSession(res, session);
 
-  res.json({ // повертаємо об'єкт нової сесії
+  res.json({
+    // повертаємо об'єкт нової сесії
     status: 200,
     message: 'Successfully refreshed a session!',
     data: {
@@ -85,6 +91,3 @@ export const refreshUserSessionController = async (req, res) => {
     },
   });
 };
-
-
-

@@ -20,8 +20,17 @@ router.use(authenticate); // middleware відпрацює на всіх роу�
 router.get('/', ctrlWrapper(getContactsController));
 router.get('/:contactId', isValidId, ctrlWrapper(getContactByIdController));
 // router.post('/', validateBody(createContactSchema), ctrlWrapper(createContactController));
-router.post('/register', validateBody(createContactSchema), ctrlWrapper(createContactController)); // після винесення шляху "/contacts" до окремого роуту
-router.patch('/:contactId', isValidId, validateBody(updateContactSchema), ctrlWrapper(patchContactController));
+router.post(
+  '/register',
+  validateBody(createContactSchema),
+  ctrlWrapper(createContactController),
+); // після винесення шляху "/contacts" до окремого роуту
+router.patch(
+  '/:contactId',
+  isValidId,
+  validateBody(updateContactSchema),
+  ctrlWrapper(patchContactController),
+);
 router.delete('/:contactId', isValidId, ctrlWrapper(deleteContactController));
 
 export default router;

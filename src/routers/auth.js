@@ -30,5 +30,4 @@ export default router;
 // створюємо окремий роутер для logout
 router.post('/logout', ctrlWrapper(logoutUserController));
 
-
 router.post('/refresh', ctrlWrapper(refreshUserSessionController));

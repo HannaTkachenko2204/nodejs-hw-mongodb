@@ -4,7 +4,7 @@ import cors from 'cors'; // інструмент безпеки для веб-д
 import dotenv from 'dotenv'; // пакет для зчитувння та використання змінних оточення в додатку
 import { env } from './utils/env.js'; // функція env, призначена для читання змінних оточення
 // import contactsRouter from './routers/contacts.js';
-import router from './routers/index.js';  // імпортуємо роутер
+import router from './routers/index.js'; // імпортуємо роутер
 import { errorHandler } from './middlewares/errorHandler.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import cookieParser from 'cookie-parser'; // пакет для роботи із куками

@@ -2,7 +2,6 @@ import createHttpError from 'http-errors';
 import { SessionsCollection } from '../db/models/session.js';
 import { UsersCollection } from '../db/models/user.js';
 
-
 // виконуємо процес аутентифікації користувача, перевіряючи наявність та дійсність токена доступу в заголовку запиту
 export const authenticate = async (req, res, next) => {
   const authHeader = req.get('Authorization'); // отримуємо заголовок авторизації
@@ -48,8 +47,6 @@ export const authenticate = async (req, res, next) => {
   // якщо всі перевірки успішні, функція додає об'єкт користувача до запиту
   req.user = user;
 
-
   // викликається наступна функція за допомогою next, що дозволяє продовжити обробку запиту
   next();
 };
-
