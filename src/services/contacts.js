@@ -8,12 +8,13 @@ export const getAllContacts = async ({
   sortOrder = SORT_ORDER.ASC,
   sortBy = '_id',
   filter = {},
+  userId,
 }) => {
   // приймає об'єкт з параметрами page та perPage, що вказують номер сторінки та кількість записів на сторінці відповідно + параметри sortOrder та sortBy дозволяють визначити порядок сортування та поле, за яким потрібно виконати сортування (_id за замовчуванням)
   const limit = perPage; // ліміт записів, які мають бути повернуті на одній сторінці
   const skip = (page - 1) * perPage; // кількість записів, що мають бути пропущені перед початком видачі на поточній сторінці
 
-  const contactsQuery = ContactsCollection.find(); // запит до колекції, find() — це вбудований метод Mongoose для пошуку документів у MongoDB
+  const contactsQuery = ContactsCollection.find({ userId }); // фільтрація за userId // запит до колекції, find() — це вбудований метод Mongoose для пошуку документів у MongoDB
 
   if (filter.contactType) {
     contactsQuery.where('contactType').equals(filter.contactType);
@@ -24,7 +25,7 @@ export const getAllContacts = async ({
   }
 
   const [contactsCount, contacts] = await Promise.all([
-    ContactsCollection.find().merge(contactsQuery).countDocuments(), // запит для підрахунку кількості документів в колекції, merge - поєднує запит contactsQuery з підрахунком, countDocuments - отримуємо загальну кількість записів
+    ContactsCollection.find({ userId }).merge(contactsQuery).countDocuments(), // запит для підрахунку кількості документів в колекції, merge - поєднує запит contactsQuery з підрахунком, countDocuments - отримуємо загальну кількість записів
     contactsQuery
       .skip(skip)
       .limit(limit)
@@ -41,8 +42,8 @@ export const getAllContacts = async ({
   };
 };
 
-export const getContactById = async (contactId) => {
-  const contact = await ContactsCollection.findById(contactId); // findById() — це вбудований метод Mongoose для пошуку одного документа у MongoDB за його унікальним ідентифікатором
+export const getContactById = async (contactId, userId) => {
+  const contact = await ContactsCollection.findById({ _id: contactId, userId }); // findById() — це вбудований метод Mongoose для пошуку одного документа у MongoDB за його унікальним ідентифікатором
   return contact;
 };
 
@@ -51,9 +52,9 @@ export const createContact = async (payload) => {
   return contact;
 };
 
-export const updateContact = async (contactId, payload) => {
+export const updateContact = async (contactId, userId, payload) => {
   const rawResult = await ContactsCollection.findOneAndUpdate(
-    { _id: contactId },
+    { _id: contactId, userId },
     payload,
     {
       new: true,
@@ -69,9 +70,10 @@ export const updateContact = async (contactId, payload) => {
   };
 };
 
-export const deleteContact = async (contactId) => {
+export const deleteContact = async (contactId, userId) => {
   const contact = await ContactsCollection.findOneAndDelete({
     _id: contactId,
+    userId,
   });
 
   return contact;

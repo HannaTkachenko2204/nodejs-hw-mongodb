@@ -16,7 +16,7 @@ export const getContactsController = async (req, res) => {
 
   const { sortBy, sortOrder } = parseSortParams(req.query); // параметри сортування
 
-  const filter = parseFilterParams(req.query);
+  const filter = { ...parseFilterParams(req.query), userId: req.user._id }; // додаємо userId до фільтру
 
   const contacts = await getAllContacts({
     page,
@@ -35,7 +35,7 @@ export const getContactsController = async (req, res) => {
 export const getContactByIdController = async (req, res) => {
   // маршрут для отримання контакта за його id
   const { contactId } = req.params;
-  const contact = await getContactById(contactId);
+  const contact = await getContactById(contactId, req.user._id); // передаємо userId в сервісну функцію
 
   // відповідь, якщо контакт не знайдено
   // if (!contact) {
@@ -67,7 +67,8 @@ export const getContactByIdController = async (req, res) => {
 };
 
 export const createContactController = async (req, res) => {
-  const contact = await createContact(req.body);
+  const contactData = { ...req.body, userId: req.user._id }; // додаємо userId до даних контакту
+  const contact = await createContact(contactData);
 
   res.status(201).json({
     status: 201,
@@ -79,7 +80,7 @@ export const createContactController = async (req, res) => {
 // eslint-disable-next-line no-unused-vars
 export const patchContactController = async (req, res, next) => {
   const { contactId } = req.params;
-  const contact = await updateContact(contactId, req.body);
+  const contact = await updateContact(contactId, req.user._id, req.body);
 
   if (!contact) {
     // cтворюємо та налаштовуємо помилку
@@ -98,7 +99,7 @@ export const patchContactController = async (req, res, next) => {
 // eslint-disable-next-line no-unused-vars
 export const deleteContactController = async (req, res, next) => {
   const { contactId } = req.params;
-  const contact = await deleteContact(contactId);
+  const contact = await deleteContact(contactId, req.user._id);
 
   if (!contact) {
     // cтворюємо та налаштовуємо помилку
