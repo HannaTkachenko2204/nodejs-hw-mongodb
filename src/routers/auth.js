@@ -1,10 +1,15 @@
 import { Router } from 'express';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import { loginUserSchema, registerUserSchema } from '../validation/auth.js';
-import { loginUserController, registerUserController } from '../controllers/auth.js';
+import {
+  loginUserController,
+  logoutUserController,
+  refreshUserSessionController,
+  registerUserController,
+} from '../controllers/auth.js';
 import { validateBody } from '../middlewares/validateBody.js';
 
-const router = Router(); 
+const router = Router();
 
 // створюємо окремий роутер для авторизації
 router.post(
@@ -21,3 +26,9 @@ router.post(
 );
 
 export default router;
+
+// створюємо окремий роутер для logout
+router.post('/logout', ctrlWrapper(logoutUserController));
+
+
+router.post('/refresh', ctrlWrapper(refreshUserSessionController));
