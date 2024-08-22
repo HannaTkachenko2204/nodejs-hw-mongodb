@@ -7,6 +7,7 @@ import { env } from './utils/env.js'; // функція env, призначен�
 import router from './routers/index.js';  // імпортуємо роутер
 import { errorHandler } from './middlewares/errorHandler.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
+import cookieParser from 'cookie-parser'; // пакет для роботи із куками
 
 dotenv.config();
 
@@ -23,6 +24,8 @@ export function setupServer() {
     }),
   ); // підключення мідлвару, який аналізує вхідні запити з JSON-пейлоадом і автоматично парсить їх у JavaScript-об'єкти
   app.use(cors());
+
+  app.use(cookieParser()); //  використовуємо cookieParser() як middleware
 
   app.use(
     pino({
