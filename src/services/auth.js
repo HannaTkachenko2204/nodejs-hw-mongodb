@@ -3,7 +3,10 @@ import bcrypt from 'bcrypt'; // застосовуємо бібліотеку х
 import { UsersCollection } from '../db/models/user.js';
 import createHttpError from 'http-errors';
 import { SessionsCollection } from '../db/models/session.js';
-import { FIFTEEN_MINUTES, THIRTY_DAY } from '../constants/index.js';
+import { FIFTEEN_MINUTES, SMTP, THIRTY_DAY } from '../constants/index.js';
+import jwt from 'jsonwebtoken';
+import { sendEmail } from '../utils/sendMail.js';
+import { env } from '../utils/env.js';
 
 export const registerUser = async (payload) => {
   //return await UsersCollection.create(payload);
@@ -91,5 +94,31 @@ export const refreshUsersSession = async ({ sessionId, refreshToken }) => {
     // створюємо та повертаємо нову сесію в колекції SessionsCollection, використовуючи ідентифікатор користувача з існуючої сесії та дані нової сесії, згенеровані функцією createSession
     userId: session.userId,
     ...newSession,
+  });
+};
+
+// сервісна функція на скид пароля
+export const requestResetToken = async (email) => {
+  const user = await UsersCollection.findOne({ email }); // шукаємо користувача в колекції користувачів за вказаною електронною поштою
+  if (!user) {
+    throw createHttpError(404, 'User not found');
+  }
+ 
+  const resetToken = jwt.sign( // створюємо токен скидання пароля, який містить ідентифікатор користувача та його електронну пошту.
+    {
+      sub: user._id,
+      email,
+    },
+    env('JWT_SECRET'),
+    {
+      expiresIn: '5m', //  токен підписується секретом JWT і має термін дії 15 хвилин
+    },
+  );
+
+  await sendEmail({ // надсилаємо електронний лист користувачу, який містить посилання для скидання пароля з включеним створеним токеном
+    from: env(SMTP.SMTP_FROM),
+    to: email,
+    subject: 'Reset your password',
+    html: `<p>Click <a href="${resetToken}">here</a> to reset your password!</p>`,
   });
 };
