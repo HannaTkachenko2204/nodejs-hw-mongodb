@@ -3,10 +3,14 @@ import bcrypt from 'bcrypt'; // застосовуємо бібліотеку х
 import { UsersCollection } from '../db/models/user.js';
 import createHttpError from 'http-errors';
 import { SessionsCollection } from '../db/models/session.js';
-import { FIFTEEN_MINUTES, SMTP, THIRTY_DAY } from '../constants/index.js';
+import { FIFTEEN_MINUTES, SMTP, TEMPLATES_DIR, THIRTY_DAY } from '../constants/index.js';
 import jwt from 'jsonwebtoken';
 import { sendEmail } from '../utils/sendMail.js';
 import { env } from '../utils/env.js';
+// додаємо шаблонізатор:
+import handlebars from 'handlebars';
+import path from 'node:path';
+import fs from 'node:fs/promises';
 
 export const registerUser = async (payload) => {
   //return await UsersCollection.create(payload);
@@ -111,14 +115,31 @@ export const requestResetToken = async (email) => {
     },
     env('JWT_SECRET'),
     {
-      expiresIn: '5m', //  токен підписується секретом JWT і має термін дії 15 хвилин
+      expiresIn: '5m', //  токен підписується секретом JWT і має термін дії 5 хвилин
     },
   );
+
+  const resetPasswordTemplatePath = path.join(
+    TEMPLATES_DIR,
+    'reset-password-email.html',
+  );
+
+  const templateSource = (
+    await fs.readFile(resetPasswordTemplatePath) // читаємо контент шаблона із файла
+  ).toString();
+
+  const template = handlebars.compile(templateSource); // передаємо контент шаблона в функцію handlebars.compile()
+  const html = template({
+    name: user.name,
+    link: `${env('APP_DOMAIN')}/reset-password?token=${resetToken}`,
+  });
 
   await sendEmail({ // надсилаємо електронний лист користувачу, який містить посилання для скидання пароля з включеним створеним токеном
     from: env(SMTP.SMTP_FROM),
     to: email,
     subject: 'Reset your password',
-    html: `<p>Click <a href="${resetToken}">here</a> to reset your password!</p>`,
+    // html: `<p>Click <a href="${resetToken}">here</a> to reset your password!</p>`,
+    html,
   });
 };
+
