@@ -10,6 +10,8 @@ import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
 import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
+import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
+import { env } from '../utils/env.js';
 
 export const getContactsController = async (req, res) => {
   // маршрут для отримання колекції всіх контактів
@@ -99,11 +101,20 @@ export const patchContactController = async (req, res, next) => {
 
   let photoUrl;
 
+  // для локального зберігання
+  // if (photo) {
+  //   photoUrl = await saveFileToUploadDir(photo);
+  // }
+
   if (photo) {
-    photoUrl = await saveFileToUploadDir(photo);
+  // якщо змінна середовища ENABLE_CLOUDINARY встановлена в true, фото завантажується на Cloudinary, інакше — у локальну директорію
+    if (env('ENABLE_CLOUDINARY') === 'true') {
+      photoUrl = await saveFileToCloudinary(photo);
+    } else {
+      photoUrl = await saveFileToUploadDir(photo);
+    }
   }
 
-  // const contact = await updateContact(contactId, req.user._id, req.body);
   const contact = await updateContact(contactId, req.user._id, {
     ...req.body,
     photo: photoUrl,
