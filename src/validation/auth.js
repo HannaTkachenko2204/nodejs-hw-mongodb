@@ -37,7 +37,7 @@ export const loginUserSchema = Joi.object({
   }),
 });
 
-// валідація на скид пароля
+// валідація на скид паролю через емейл
 export const requestResetEmailSchema = Joi.object({
   email: Joi.string()
     .pattern(/.+@.+\..+/, 'Please fill a valid email address')
@@ -47,4 +47,16 @@ export const requestResetEmailSchema = Joi.object({
       'string.pattern.name': 'Please fill a valid email address',
       'any.required': 'Email is required',
     }),
+});
+
+// валідація на зміну пароля
+export const resetPasswordSchema = Joi.object({
+  password: Joi.string().required().messages({
+    'string.base': 'Password should be a string',
+    'any.required': 'Password is required',
+  }),
+  token: Joi.string().required().messages({
+    'string.base': 'Token should be a string',
+    'any.required': 'Token is required',
+  }),
 });
