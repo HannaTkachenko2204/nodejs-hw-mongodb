@@ -70,7 +70,23 @@ export const getContactByIdController = async (req, res) => {
 };
 
 export const createContactController = async (req, res) => {
-  const contactData = { ...req.body, userId: req.user._id }; // додаємо userId до даних контакту
+  const photo = req.file;
+  let photoUrl;
+
+  if (photo) {
+    if (env('ENABLE_CLOUDINARY') === 'true') {
+      photoUrl = await saveFileToCloudinary(photo);
+    } else {
+      photoUrl = await saveFileToUploadDir(photo);
+    }
+  }
+
+  const contactData = { 
+    ...req.body, 
+    userId: req.user._id, // додаємо userId до даних контакту
+    photo: photoUrl // додаємо URL фото до даних контакту
+  };
+
   const contact = await createContact(contactData);
 
   res.status(201).json({
