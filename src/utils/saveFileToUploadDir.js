@@ -1,7 +1,7 @@
 import path from 'node:path';
 import fs from 'node:fs/promises';
 import { TEMP_UPLOAD_DIR, UPLOAD_DIR } from '../constants/index.js';
-import { env } from '../utils/env.js';
+import { env } from './env.js';
 
 // функція saveFileToUploadDir буде зберігати зображення в постійну папку, а також видаляти її з тимчасової
 export const saveFileToUploadDir = async (file) => {
