@@ -94,7 +94,6 @@ export const refreshUserSessionController = async (req, res) => {
   });
 };
 
-
 // контролер, який буде обробляти запит на скидання паролю через емейл
 export const requestResetEmailController = async (req, res) => {
   await requestResetToken(req.body.email);

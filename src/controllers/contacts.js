@@ -81,10 +81,10 @@ export const createContactController = async (req, res) => {
     }
   }
 
-  const contactData = { 
-    ...req.body, 
+  const contactData = {
+    ...req.body,
     userId: req.user._id, // додаємо userId до даних контакту
-    photo: photoUrl // додаємо URL фото до даних контакту
+    photo: photoUrl, // додаємо URL фото до даних контакту
   };
 
   const contact = await createContact(contactData);
@@ -123,7 +123,7 @@ export const patchContactController = async (req, res, next) => {
   // }
 
   if (photo) {
-  // якщо змінна середовища ENABLE_CLOUDINARY встановлена в true, фото завантажується на Cloudinary, інакше — у локальну директорію
+    // якщо змінна середовища ENABLE_CLOUDINARY встановлена в true, фото завантажується на Cloudinary, інакше — у локальну директорію
     if (env('ENABLE_CLOUDINARY') === 'true') {
       photoUrl = await saveFileToCloudinary(photo);
     } else {

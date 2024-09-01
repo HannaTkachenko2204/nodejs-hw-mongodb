@@ -3,7 +3,12 @@ import bcrypt from 'bcrypt'; // застосовуємо бібліотеку х
 import { UsersCollection } from '../db/models/user.js';
 import createHttpError from 'http-errors';
 import { SessionsCollection } from '../db/models/session.js';
-import { FIFTEEN_MINUTES, SMTP, TEMPLATES_DIR, THIRTY_DAY } from '../constants/index.js';
+import {
+  FIFTEEN_MINUTES,
+  SMTP,
+  TEMPLATES_DIR,
+  THIRTY_DAY,
+} from '../constants/index.js';
 import jwt from 'jsonwebtoken';
 import { sendEmail } from '../utils/sendMail.js';
 import { env } from '../utils/env.js';
@@ -107,8 +112,9 @@ export const requestResetToken = async (email) => {
   if (!user) {
     throw createHttpError(404, 'User not found');
   }
- 
-  const resetToken = jwt.sign( // створюємо токен скидання пароля, який містить ідентифікатор користувача та його електронну пошту.
+
+  const resetToken = jwt.sign(
+    // створюємо токен скидання пароля, який містить ідентифікатор користувача та його електронну пошту.
     {
       sub: user._id,
       email,
@@ -124,9 +130,8 @@ export const requestResetToken = async (email) => {
     'reset-password-email.html',
   );
 
-  const templateSource = (
-    await fs.readFile(resetPasswordTemplatePath) // читаємо контент шаблона із файла
-  ).toString();
+  const templateSource = (await fs.readFile(resetPasswordTemplatePath)) // читаємо контент шаблона із файла
+    .toString();
 
   const template = handlebars.compile(templateSource); // передаємо контент шаблона в функцію handlebars.compile()
   const html = template({
@@ -134,7 +139,8 @@ export const requestResetToken = async (email) => {
     link: `${env('APP_DOMAIN')}/reset-password?token=${resetToken}`,
   });
 
-  await sendEmail({ // надсилаємо електронний лист користувачу, який містить посилання для скидання пароля з включеним створеним токеном
+  await sendEmail({
+    // надсилаємо електронний лист користувачу, який містить посилання для скидання пароля з включеним створеним токеном
     from: env(SMTP.SMTP_FROM),
     to: email,
     subject: 'Reset your password',
@@ -150,7 +156,8 @@ export const resetPassword = async (payload) => {
   try {
     entries = jwt.verify(payload.token, env('JWT_SECRET'));
   } catch (err) {
-    if (err instanceof Error) throw createHttpError(401, "Token is expired or invalid.");
+    if (err instanceof Error)
+      throw createHttpError(401, 'Token is expired or invalid.');
     throw err;
   }
 
