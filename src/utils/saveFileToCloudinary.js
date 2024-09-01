@@ -2,7 +2,7 @@
 import cloudinary from 'cloudinary';
 import fs from 'node:fs/promises';
 
-import { env } from './env.js';
+import { env } from '../utils/env.js';
 import { CLOUDINARY } from '../constants/index.js';
 
 cloudinary.v2.config({
