@@ -8,6 +8,7 @@ import router from './routers/index.js'; // імпортуємо роутер
 import { errorHandler } from './middlewares/errorHandler.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import cookieParser from 'cookie-parser'; // пакет для роботи із куками
+import { UPLOAD_DIR } from './constants/index.js';
 
 dotenv.config();
 
@@ -37,6 +38,8 @@ export function setupServer() {
 
   // app.use(contactsRouter);
   app.use(router); // додаємо роутер до app як middleware
+
+  app.use('/uploads', express.static(UPLOAD_DIR)); // додамо до нашого express можливість роздавати статичні файли
 
   app.use('*', notFoundHandler);
 

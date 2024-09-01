@@ -17,3 +17,6 @@ export const SMTP = {
 };
 
 export const TEMPLATES_DIR = path.join(process.cwd(), 'src', 'templates'); // додаємо шаблонізатор
+
+export const TEMP_UPLOAD_DIR = path.join(process.cwd(), 'temp'); // тимчасова директорія для завантажень
+export const UPLOAD_DIR = path.join(process.cwd(), 'uploads');

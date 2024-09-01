@@ -25,7 +25,8 @@ const contactsSchema = new Schema(
       required: true,
       default: 'personal',
     },
-    userId: { type: Schema.Types.ObjectId, ref: 'users', required: true }, // дає можливість при створенні студента вказувати звʼязок між колекціями users та students
+    userId: { type: Schema.Types.ObjectId, ref: 'users', required: true }, // дає можливість при створенні контакту вказувати звʼязок між колекціями users та students
+    photo: { type: String }, // можливість додавати до об’єкту контакту властивість photo
   },
   {
     timestamps: true, // встановлює значення true, щоб автоматично створювати поля createdAt та updatedAt, які вказують на час створення та оновлення документа
