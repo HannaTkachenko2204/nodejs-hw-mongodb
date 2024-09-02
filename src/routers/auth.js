@@ -48,7 +48,7 @@ router.post(
 
 // роутер для зміни паролю
 router.post(
-  '/reset-password',
+  '/reset-pwd',
   validateBody(resetPasswordSchema),
   ctrlWrapper(resetPasswordController),
 );
