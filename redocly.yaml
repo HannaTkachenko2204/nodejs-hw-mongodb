@@ -1,4 +1,5 @@
-# See https://redocly.com/docs/cli/configuration/ for more information.
+# цей файл дозволяє налаштовувати параметри генерації документації для API, включаючи налаштування стилів, шрифтів, тем тощо
+# See https://redocly.com/docs/cli/configuration/ for more information
 apis:
   sample@v1:
     root: docs/openapi.yaml
@@ -12,7 +13,7 @@ theme:
     primary:
       main: '#32329f'
   generateCodeSamples:
-    languages:
+    languages: # Array of language config objects; indicates in which languages to generate code samples
       - lang: curl
       - lang: Node.js
       - lang: JavaScript
