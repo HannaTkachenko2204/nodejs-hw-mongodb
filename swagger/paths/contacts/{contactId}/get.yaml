@@ -1,0 +1,40 @@
+tags:
+  - Contacts # операція належить до групи операцій з тегом Contacts
+summary: Get contact by id # короткий опис операції
+operationId: getContact # унікальний ідентифікатор операції
+description: 'Get contact by id' # більш детальний опис операції
+security:
+# потрібна аутентифікація за допомогою Bearer Token (bearerAuth), який був визначений у /docs/openapi.yaml
+  - bearerAuth: []
+parameters:
+  - in: path
+    name: contactId
+    required: true
+    schema:
+      type: string
+      example: '65ca67e7ae7f10c88b598384' # приклад значення параметра
+responses:
+  '200':
+    description: 'Get contact by id'
+    content:
+      application/json: # формат відповіді
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: Successfully found contact with id 65ca67e7ae7f10c88b598384!
+            data:
+              type: object
+              $ref: '../../../components/schemas/contact.yaml'
+  '404':
+    $ref: '../../../components/responses/404.yaml'           
+  '401':
+    $ref: '../../../components/responses/401.yaml'

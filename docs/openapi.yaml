@@ -8,11 +8,20 @@ info:
   description: This is a documentation of contacts app
 tags:
   # теги, що ви будете використовувати
+  - name: Students
+    description: Operations about contacts
+  - name: Auth
+    description: Auth operations
 servers:
   - url: http://localhost:3000
-  - url: #посилання на задеплоєний сайт
+  - url: //example.com/api/v1 #посилання на задеплоєний сайт
 paths:
-  # тут будуть посилання на ендпоінти
+  /contacts:
+    post:
+      $ref: ../swagger/paths/contacts/post.yaml
+  /contacts/{contactId}:
+    get:
+      $ref: ../swagger/paths/contacts/{contactId}/get.yaml #$ref - це спеціальний ключ в YAML файлах, який використовується для посилання на інші частини YAML файлу або на інші файли
 components:
   securitySchemes:
     bearerAuth:
