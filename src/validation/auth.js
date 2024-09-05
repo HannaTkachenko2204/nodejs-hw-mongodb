@@ -60,3 +60,11 @@ export const resetPasswordSchema = Joi.object({
     'any.required': 'Token is required',
   }),
 });
+
+// валідація логіну з google
+export const loginWithGoogleOAuthSchema = Joi.object({
+  code: Joi.string().required().messages({
+    'string.base': 'Code should be a string',
+    'any.required': 'Code is required',
+  }),
+});

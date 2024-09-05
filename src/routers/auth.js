@@ -2,12 +2,15 @@ import { Router } from 'express';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import {
   loginUserSchema,
+  loginWithGoogleOAuthSchema,
   registerUserSchema,
   requestResetEmailSchema,
   resetPasswordSchema,
 } from '../validation/auth.js';
 import {
+  getGoogleOAuthUrlController,
   loginUserController,
+  loginWithGoogleController,
   logoutUserController,
   refreshUserSessionController,
   registerUserController,
@@ -46,9 +49,19 @@ router.post(
   ctrlWrapper(requestResetEmailController),
 );
 
-// роутер для зміни паролю
+// роут для зміни паролю
 router.post(
   '/reset-pwd',
   validateBody(resetPasswordSchema),
   ctrlWrapper(resetPasswordController),
+);
+
+// роут для отримання посилання авторизації
+router.get('/get-oauth-url', ctrlWrapper(getGoogleOAuthUrlController));
+
+// роут логіну з google
+router.post(
+  '/confirm-google-oauth',
+  validateBody(loginWithGoogleOAuthSchema),
+  ctrlWrapper(loginWithGoogleController),
 );
