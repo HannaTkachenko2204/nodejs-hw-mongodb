@@ -14,7 +14,7 @@ tags:
     description: Auth operations
 servers:
   - url: http://localhost:3000
-  - url: //example.com/api/v1 #посилання на задеплоєний сайт
+  - url: https://nodejs-hw-mongodb-lotd.onrender.com #посилання на задеплоєний сайт
 paths:
   /contacts:
     get:
