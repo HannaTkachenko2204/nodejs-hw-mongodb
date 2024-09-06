@@ -1,0 +1,41 @@
+tags:
+  - Auth
+summary: Login with Google OAuth
+operationId: oauthLogin
+description: Login with Google OAuth
+security: []
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          code:
+            type: string
+            example: "4/0AX4XfWj12345..."
+responses:
+  '200':
+    description: Successfully logged in via Google OAuth
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: 'Successfully logged in via Google OAuth!'
+            data:
+              type: object
+              properties:
+                accessToken:
+                  type: string
+                  example: 'UYv9hnMH8inKdR3NgGMrFOL4IdVPmRuED6E0nn7q'
+                  description: AccessToken is valid for 15 minutes
+  '500':
+    $ref: '../../components/responses/500.yaml'
+  '400':
+    description: Bad Request
