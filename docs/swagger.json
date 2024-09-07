@@ -11,10 +11,10 @@
   },
   "servers": [
     {
-      "url": "http://localhost:3000"
+      "url": "http://127.0.0.1:3000"
     },
     {
-      "url": "//example.com/api/v1"
+      "url": "https://nodejs-hw-mongodb-lotd.onrender.com"
     }
   ],
   "tags": [
@@ -63,6 +63,14 @@
             "name": "sortBy",
             "schema": {
               "type": "string",
+              "enum": [
+                "_id",
+                "name",
+                "phoneNumber",
+                "email",
+                "isFavourite",
+                "contactType"
+              ],
               "example": "name",
               "description": "All contact's fields can be mentioned. Default value - _id"
             }
@@ -1005,7 +1013,7 @@
               "personal"
             ]
           },
-          "userIdId": {
+          "userId": {
             "description": "Contact's user id",
             "type": "string",
             "example": "65e4decdd286b30065d54af9"

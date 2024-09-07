@@ -29,7 +29,7 @@ properties:
     description: "Contact's type"
     type: string
     enum: ['work', 'home', 'personal'] # перелік можливих значень для поля
-  userIdId:
+  userId:
     description: "Contact's user id"
     type: string
     example: 65e4decdd286b30065d54af9
